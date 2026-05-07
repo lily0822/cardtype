@@ -326,7 +326,8 @@
         </div>
 
         <div class="cards-container">
-            <h3>選擇撲克牌 <span style="font-size:0.9rem; font-weight:normal; opacity:0.8;">(點擊上方框框選擇位置，再點擊下方卡牌寫入)</span></h3>
+            <h3>選擇撲克牌 <span style="font-size:0.9rem; font-weight:normal; opacity:0.8;">(點擊上方框框選擇位置，再點擊下方卡牌寫入)</span>
+            <button class="clear-btn" style="float: right;" onclick="clearAllGroups()">一鍵全部清除</button></h3>
             <div class="suits-grid" id="suits-grid">
                 <!-- 由 JS 注入 Cards -->
             </div>
@@ -494,6 +495,20 @@
             });
             // 將 active 移到該群組的第一個
             activeSlotIndex = parseInt(groupSlots[0].dataset.index);
+            updateActiveSlot();
+        }
+
+        function clearAllGroups() {
+            const allBtns = document.querySelectorAll('.card-btn');
+            allBtns.forEach(btn => btn.classList.remove('used'));
+            
+            allSlots.forEach(s => {
+                s.dataset.value = '';
+                s.innerHTML = '';
+                s.className = 'slot';
+            });
+            
+            activeSlotIndex = 0;
             updateActiveSlot();
         }
 
