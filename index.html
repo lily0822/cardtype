@@ -62,7 +62,7 @@
             color: #cbd5e1;
             font-weight: 500;
         }
-        input {
+        input, select {
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
@@ -72,10 +72,14 @@
             transition: all 0.3s;
             font-size: 1.05rem;
         }
-        input:focus {
+        input:focus, select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
             background: rgba(15, 23, 42, 0.8);
+        }
+        select option {
+            background: #1e293b;
+            color: white;
         }
         
         .slots-container {
@@ -302,12 +306,18 @@
                 <input type="text" id="server-ip" placeholder="例如：192.168.1.100">
             </div>
             <div class="input-group">
+                <label for="agent-id">代理 ID</label>
+                <input type="text" id="agent-id" placeholder="例如：agent01">
+            </div>
+            <div class="input-group">
                 <label for="account-id">玩家帳號</label>
                 <input type="text" id="account-id" placeholder="例如：player123">
             </div>
             <div class="input-group">
                 <label for="game-code">遊戲代號</label>
-                <input type="text" id="game-code" placeholder="例如：game01">
+                <select id="game-code">
+                    <option value="lhp">六花牌</option>
+                </select>
             </div>
         </div>
 
@@ -493,11 +503,12 @@
         // 產生連結功能
         function generateLink() {
             const ip = document.getElementById('server-ip').value.trim();
+            const agentId = document.getElementById('agent-id').value.trim();
             const account = document.getElementById('account-id').value.trim();
             const game = document.getElementById('game-code').value.trim();
             
-            if (!ip || !account || !game) {
-                alert('請填寫網域、玩家帳號與遊戲代號！');
+            if (!ip || !agentId || !account || !game) {
+                alert('請填寫網域、代理 ID、玩家帳號與遊戲代號！');
                 return;
             }
             
@@ -524,7 +535,8 @@
             const baseUrl = `http://${ip}:8880/hk4g4z8q96`;
             
             // 結合各參數產生 URL，其中 name 及 game 使用轉碼確保特殊字元安全
-            const url = `${baseUrl}?name=${encodeURIComponent(account)}&game=${encodeURIComponent(game)}&data=${dataStr}`;
+            const combinedName = `${agentId}_${account}`;
+            const url = `${baseUrl}?name=${encodeURIComponent(combinedName)}&game=${encodeURIComponent(game)}&data=${dataStr}`;
             
             const resultLink = document.getElementById('result-link');
             resultLink.href = url;
