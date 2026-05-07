@@ -216,6 +216,11 @@
         .card-btn:active {
             transform: translateY(0);
         }
+        .card-btn.used {
+            opacity: 0.3;
+            pointer-events: none;
+            filter: grayscale(100%);
+        }
         .card-spades, .card-clubs { color: #0f172a; }
         .card-hearts, .card-diamonds { color: #dc2626; }
         .card-joker { color: #7c3aed; width: 5.5rem; }
@@ -429,6 +434,14 @@
 
         allSlots.forEach((slot, idx) => {
             slot.addEventListener('click', () => {
+                if (slot.dataset.value) {
+                    // 如果已經有牌，再次點擊就自動清除
+                    const oldBtn = document.querySelector(`.card-btn[data-value="${slot.dataset.value}"]`);
+                    if (oldBtn) oldBtn.classList.remove('used');
+                    slot.dataset.value = '';
+                    slot.innerHTML = '';
+                    slot.className = 'slot';
+                }
                 activeSlotIndex = idx;
                 updateActiveSlot();
             });
@@ -437,9 +450,19 @@
         function selectCard(btn) {
             if (activeSlotIndex === null || activeSlotIndex >= allSlots.length) return;
             const slot = allSlots[activeSlotIndex];
+            
+            // 如果原本已經有牌，先把它釋放
+            if (slot.dataset.value) {
+                const oldBtn = document.querySelector(`.card-btn[data-value="${slot.dataset.value}"]`);
+                if (oldBtn) oldBtn.classList.remove('used');
+            }
+
             slot.dataset.value = btn.dataset.value;
             slot.innerHTML = `<div>${btn.dataset.display}</div><div class="slot-value">${btn.dataset.value}</div>`;
             slot.className = `slot has-card ${btn.dataset.colorClass}`;
+            
+            // 將點選的牌標記為已使用
+            btn.classList.add('used');
             
             // 自動跳到下一個格子
             if (activeSlotIndex < allSlots.length - 1) {
@@ -451,6 +474,10 @@
         function clearGroup(groupId) {
             const groupSlots = document.querySelectorAll(`.slot[data-group="${groupId}"]`);
             groupSlots.forEach(s => {
+                if (s.dataset.value) {
+                    const oldBtn = document.querySelector(`.card-btn[data-value="${s.dataset.value}"]`);
+                    if (oldBtn) oldBtn.classList.remove('used');
+                }
                 s.dataset.value = '';
                 s.innerHTML = '';
                 s.className = 'slot';
