@@ -163,12 +163,23 @@
             border-color: var(--slot-active);
             box-shadow: 0 0 0 3px var(--slot-active), 0 4px 6px rgba(0,0,0,0.3);
         }
-        .slot-value {
-            position: absolute;
-            bottom: 4px;
-            right: 6px;
-            font-size: 0.75rem;
-            opacity: 0.6;
+        .clear-all-btn {
+            display: block;
+            margin: -0.5rem auto 2rem auto;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            padding: 0.8rem 2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+        .clear-all-btn:hover {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
         }
 
         .cards-container {
@@ -229,12 +240,7 @@
         .card-hearts, .card-diamonds { color: #dc2626; }
         .card-joker { color: #7c3aed; width: 5.5rem; }
         
-        .card-value-display {
-            font-size: 0.8rem;
-            opacity: 0.6;
-            margin-top: 0.3rem;
-            font-weight: normal;
-        }
+
 
         .action-container {
             display: flex;
@@ -324,10 +330,11 @@
         <div class="slots-container" id="slots-container">
             <!-- 由 JS 注入 Slots -->
         </div>
+        
+        <button class="clear-all-btn" onclick="clearAllGroups()">一鍵清除所有手牌</button>
 
         <div class="cards-container">
-            <h3>選擇撲克牌 <span style="font-size:0.9rem; font-weight:normal; opacity:0.8;">(點擊上方框框選擇位置，再點擊下方卡牌寫入)</span>
-            <button class="clear-btn" style="float: right;" onclick="clearAllGroups()">一鍵全部清除</button></h3>
+            <h3>選擇撲克牌 <span style="font-size:0.9rem; font-weight:normal; opacity:0.8;">(點擊上方框框選擇位置，再點擊下方卡牌寫入)</span></h3>
             <div class="suits-grid" id="suits-grid">
                 <!-- 由 JS 注入 Cards -->
             </div>
@@ -395,7 +402,7 @@
                 const val = suit.offset + idx + 1;
                 const btn = document.createElement('button');
                 btn.className = `card-btn ${suit.class}`;
-                btn.innerHTML = `<div>${suit.symbol}${rank}</div><div class="card-value-display">${val}</div>`;
+                btn.innerHTML = `<div>${suit.symbol}${rank}</div>`;
                 btn.dataset.value = val;
                 btn.dataset.display = `${suit.symbol}${rank}`;
                 btn.dataset.colorClass = suit.class;
@@ -411,7 +418,7 @@
         
         const smallJoker = document.createElement('button');
         smallJoker.className = 'card-btn card-joker';
-        smallJoker.innerHTML = `<div>小王</div><div class="card-value-display">53</div>`;
+        smallJoker.innerHTML = `<div>小王</div>`;
         smallJoker.dataset.value = 53;
         smallJoker.dataset.display = '小王';
         smallJoker.dataset.colorClass = 'card-joker';
@@ -420,7 +427,7 @@
 
         const bigJoker = document.createElement('button');
         bigJoker.className = 'card-btn card-joker';
-        bigJoker.innerHTML = `<div>大王</div><div class="card-value-display">54</div>`;
+        bigJoker.innerHTML = `<div>大王</div>`;
         bigJoker.dataset.value = 54;
         bigJoker.dataset.display = '大王';
         bigJoker.dataset.colorClass = 'card-joker';
@@ -469,7 +476,7 @@
             }
 
             slot.dataset.value = btn.dataset.value;
-            slot.innerHTML = `<div>${btn.dataset.display}</div><div class="slot-value">${btn.dataset.value}</div>`;
+            slot.innerHTML = `<div>${btn.dataset.display}</div>`;
             slot.className = `slot has-card ${btn.dataset.colorClass}`;
             
             // 將點選的牌標記為已使用
